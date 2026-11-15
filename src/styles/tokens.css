@@ -1,0 +1,162 @@
+/* ───────────────────────── Tokens ───────────────────────── */
+
+:root {
+  color-scheme: light;
+  --font-ar: "qari-ar-noto";
+  --font-en: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --font-ui: var(--font-ar), var(--font-en), system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  --reader-size: 18px;
+  --measure: 68ch;
+  --leading-ar: 1.95;
+  --leading-en: 1.7;
+
+  /* Surfaces */
+  --bg: #f2f2f5;
+  --canvas: #ffffff;
+  --canvas-solid: #ffffff;
+  --text: #1d1d1f;
+  --text-2: rgb(60 60 67 / 0.74);
+  --text-3: rgb(60 60 67 / 0.46);
+  --accent: #007aff;
+  --accent-soft: rgb(0 122 255 / 0.12);
+  --on-accent: #ffffff;
+  --hairline: rgb(0 0 0 / 0.09);
+  --fill: rgb(120 120 128 / 0.14);
+  --fill-2: rgb(120 120 128 / 0.08);
+  --fill-hover: rgb(120 120 128 / 0.16);
+  --code-bg: rgb(118 118 128 / 0.08);
+  --mark: rgb(255 214 10 / 0.45);
+  --mark-current: rgb(255 159 10 / 0.75);
+  --scrim: rgb(0 0 0 / 0.16);
+
+  /* Glass — light material on top of content */
+  --glass-bg: rgb(255 255 255 / 0.58);
+  --glass-thick: rgb(252 252 254 / 0.8);
+  --glass-edge: rgb(255 255 255 / 0.85);
+  --glass-rim: rgb(0 0 0 / 0.06);
+  --glass-blur: 24px;
+  --glass-shadow: 0 10px 30px -8px rgb(0 0 0 / 0.16), 0 2px 6px -2px rgb(0 0 0 / 0.08);
+  --glass-shadow-lg: 0 30px 80px -20px rgb(0 0 0 / 0.28), 0 8px 24px -8px rgb(0 0 0 / 0.12);
+
+  /* Geometry (macOS default; Windows overrides below) */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 26px;
+  --pill-h: 36px;
+  --btn: 32px;
+  --titlebar-h: 56px;
+  --tb-pad-left: 14px;
+  --tb-pad-right: 14px;
+
+  /* Alerts */
+  --note: #0a84ff;
+  --tip: #30a46c;
+  --important: #8e4ec6;
+  --warning: #c98a04;
+  --caution: #e5484d;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1c1c1e;
+  --canvas: #1c1c1e;
+  --canvas-solid: #1c1c1e;
+  --text: #f5f5f7;
+  --text-2: rgb(235 235 245 / 0.68);
+  --text-3: rgb(235 235 245 / 0.4);
+  --accent: #0a84ff;
+  --accent-soft: rgb(10 132 255 / 0.2);
+  --hairline: rgb(255 255 255 / 0.1);
+  --fill: rgb(120 120 128 / 0.28);
+  --fill-2: rgb(120 120 128 / 0.16);
+  --fill-hover: rgb(120 120 128 / 0.3);
+  --code-bg: rgb(255 255 255 / 0.06);
+  --mark: rgb(255 214 10 / 0.32);
+  --mark-current: rgb(255 159 10 / 0.6);
+  --scrim: rgb(0 0 0 / 0.42);
+
+  --glass-bg: rgb(44 44 48 / 0.55);
+  --glass-thick: rgb(38 38 42 / 0.82);
+  --glass-edge: rgb(255 255 255 / 0.16);
+  --glass-rim: rgb(0 0 0 / 0.35);
+  --glass-shadow: 0 12px 34px -10px rgb(0 0 0 / 0.6), 0 2px 6px -2px rgb(0 0 0 / 0.4);
+  --glass-shadow-lg: 0 34px 90px -20px rgb(0 0 0 / 0.7), 0 10px 30px -10px rgb(0 0 0 / 0.5);
+
+  --note: #3b9eff;
+  --tip: #3dd68c;
+  --important: #bf7af0;
+  --warning: #ffca16;
+  --caution: #ff6369;
+}
+
+/* ── Window material: native glass shows through a translucent reading canvas ── */
+:root[data-glass="on"] {
+  --bg: transparent;
+  --canvas: rgb(255 255 255 / 0.74);
+}
+:root[data-glass="on"][data-theme="dark"] {
+  --canvas: rgb(28 28 30 / 0.62);
+}
+:root[data-platform="windows"][data-glass="on"] {
+  --canvas: rgb(255 255 255 / 0.56);
+}
+:root[data-platform="windows"][data-glass="on"][data-theme="dark"] {
+  --canvas: rgb(32 32 32 / 0.5);
+}
+
+/* ── Platform geometry ── */
+:root[data-platform="mac"] {
+  --titlebar-h: 52px;
+  --tb-pad-left: 86px; /* traffic lights live here (physically left, even in RTL) */
+}
+:root[data-platform="windows"] {
+  --font-en: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 8px;
+  --r-xl: 12px;
+  --pill-h: 34px;
+  --titlebar-h: 48px;
+  --tb-pad-right: 146px; /* caption buttons */
+  --accent: #0067c0;
+  --glass-blur: 30px;
+  --glass-shadow: 0 8px 16px rgb(0 0 0 / 0.14), 0 0 2px rgb(0 0 0 / 0.12);
+  --glass-shadow-lg: 0 32px 64px rgb(0 0 0 / 0.19), 0 2px 21px rgb(0 0 0 / 0.15);
+}
+:root[data-platform="windows"][data-theme="dark"] {
+  --accent: #4cc2ff;
+  --on-accent: #000000;
+}
+/* Installed PWA with window-controls-overlay: sit inside the OS title-bar area */
+@media (display-mode: window-controls-overlay) {
+  :root[data-platform="web"] {
+    --titlebar-h: max(48px, env(titlebar-area-height, 48px));
+    --tb-pad-left: calc(env(titlebar-area-x, 0px) + 10px);
+    --tb-pad-right: calc(100vw - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100vw) + 10px);
+  }
+}
+
+/* ── Accessibility ── */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-bg: var(--canvas-solid);
+    --glass-thick: var(--canvas-solid);
+    --glass-blur: 0px;
+    --canvas: var(--canvas-solid) !important;
+  }
+}
+@media (prefers-contrast: more) {
+  :root {
+    --glass-bg: var(--canvas-solid);
+    --glass-thick: var(--canvas-solid);
+    --glass-blur: 0px;
+    --glass-rim: var(--text-3);
+    --hairline: var(--text-3);
+    --text-2: var(--text);
+  }
+}
