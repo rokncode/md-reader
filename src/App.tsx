@@ -269,11 +269,13 @@ export default function App() {
   const toast = useApp((s) => s.toast);
   const focus = useApp((s) => s.focus);
   const ws = useApp((s) => s.ws);
+  const loading = useApp((s) => s.loading);
 
   return (
     <MotionConfig reducedMotion="user">
       <div className="app">
         <Reader />
+        <div className="progress" data-active={loading || undefined} aria-hidden />
         <Toolbar />
         <Panels />
         <AnimatePresence>

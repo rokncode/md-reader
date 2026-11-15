@@ -10,6 +10,8 @@ type State = {
   ws: Workspace | null;
   doc: Doc | null;
   loading: boolean;
+  /** What is being opened (URL / name) while a workspace is still being fetched. */
+  opening: string | null;
   error: string | null;
   panel: Panel;
   /** Element that opened the current popover — used as the transform origin. */
@@ -46,6 +48,7 @@ export const useApp = create<State & Actions>()((set, get) => ({
   ws: null,
   doc: null,
   loading: false,
+  opening: null,
   error: null,
   panel: null,
   anchor: null,
@@ -67,7 +70,7 @@ export const useApp = create<State & Actions>()((set, get) => ({
     set({ ws, doc: null, error: null, panel: null });
     const target = rel ?? ws.entries[0]?.rel;
     if (target) await get().openDoc(target, hash);
-    else set({ error: "emptyFolder" });
+    else set({ error: "emptyFolder", loading: false, opening: null });
   },
 
   async openDoc(rel, hash) {
@@ -89,10 +92,11 @@ export const useApp = create<State & Actions>()((set, get) => ({
       set({
         doc: { ...rendered, rel, name: entry?.name ?? rel.split("/").pop()!, mtime, version: 0 },
         loading: false,
+        opening: null,
         pendingHash: hash ?? null,
       });
     } catch {
-      if (my === seq) set({ loading: false, error: "errorRead" });
+      if (my === seq) set({ loading: false, opening: null, error: "errorRead" });
     }
   },
 

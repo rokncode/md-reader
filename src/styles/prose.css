@@ -460,4 +460,19 @@
   .prose {
     padding-inline: 18px;
   }
+  /* Keep columns readable on phones: each cell gets a floor width and the
+     table scrolls sideways instead of collapsing to one word per line. */
+  .prose .table-wrap {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  .prose th,
+  .prose td {
+    padding: 0.55em 0.75em;
+  }
+  .prose :is(th, td)::before {
+    content: "";
+    display: block;
+    width: 8.5em;
+  }
 }

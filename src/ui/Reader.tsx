@@ -4,12 +4,15 @@ import { useApp, scrollMemory } from "../state/app";
 import { Content, scrollToId } from "../markdown/Content";
 import { EmptyState } from "./EmptyState";
 import { useT } from "../i18n";
+import { Loader2 } from "lucide-react";
 
 /** The full-window reading canvas. The chrome floats above; content scrolls underneath. */
 export function Reader() {
   const t = useT();
   const doc = useApp((s) => s.doc);
   const error = useApp((s) => s.error);
+  const loading = useApp((s) => s.loading);
+  const opening = useApp((s) => s.opening);
   const pendingHash = useApp((s) => s.pendingHash);
   const set = useApp((s) => s.set);
   const ref = useRef<HTMLDivElement>(null);
@@ -73,6 +76,34 @@ export function Reader() {
           >
             <Content tree={doc.tree} rel={doc.rel} docLang={doc.lang} />
           </motion.article>
+        ) : loading ? (
+          <motion.div
+            key="loading"
+            className="loading-view"
+            role="status"
+            aria-live="polite"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, delay: 0.08 }}
+          >
+            <Loader2 size={22} className="animate-spin" />
+            <p className="loading-title">{t("opening")}</p>
+            {opening ? (
+              <p className="loading-target" dir="ltr">
+                {opening}
+              </p>
+            ) : null}
+            <div className="doc-skeleton" aria-hidden>
+              <span style={{ width: "55%", height: 22 }} />
+              <span />
+              <span />
+              <span style={{ width: "80%" }} />
+              <span style={{ width: "40%", marginTop: 18 }} />
+              <span />
+              <span style={{ width: "70%" }} />
+            </div>
+          </motion.div>
         ) : error ? (
           <motion.div key="err" className="grid place-items-center h-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="text-center" style={{ color: "var(--text-2)" }}>

@@ -40,8 +40,37 @@ export function firstStrong(text: string): "rtl" | "ltr" | null {
  * language — including containers (quotes, lists, alerts) whose markers and
  * borders must sit on the correct side. Code is always left-to-right.
  */
+/** Direction most of the text is written in — robust to an item that merely opens with a foreign term. */
+export function dominant(text: string): "rtl" | "ltr" | null {
+  let rtl = 0;
+  let ltr = 0;
+  for (const ch of text) {
+    if (RTL_CHAR.test(ch)) rtl++;
+    else if (LTR_CHAR.test(ch)) ltr++;
+  }
+  if (!rtl && !ltr) return null;
+  return rtl >= ltr ? "rtl" : "ltr";
+}
+
+/** Give a list a single direction from its whole content; items (and their paragraphs) inherit it,
+ *  so markers stay on one side even when an item starts with an English term. */
+function setListDir(list: Element) {
+  if (!list.properties.dir) {
+    const d = dominant(textOf(list));
+    if (d) list.properties.dir = d;
+  }
+  for (const li of list.children) {
+    if (li.type !== "element" || li.tagName !== "li") continue;
+    li.properties.dir ??= list.properties.dir;
+    for (const c of li.children) {
+      if (c.type === "element" && c.tagName === "p") c.properties.dir ??= list.properties.dir;
+    }
+  }
+}
+
 export function dirAuto(tree: Root) {
   visit(tree, "element", (el: Element) => {
+    if (el.tagName === "ul" || el.tagName === "ol") setListDir(el);
     if (el.tagName === "pre" || el.tagName === "mermaid-diagram") {
       el.properties.dir = "ltr";
       return SKIP;
@@ -51,7 +80,7 @@ export function dirAuto(tree: Root) {
       return SKIP;
     }
     if (BLOCKS.has(el.tagName) && !el.properties.dir) {
-      const d = firstStrong(textOf(el));
+      const d = el.tagName === "table" ? dominant(textOf(el)) : firstStrong(textOf(el));
       if (d) el.properties.dir = d;
     }
   });

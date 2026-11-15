@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Link2, ArrowUp, Loader2 } from "lucide-react";
 import { useT, type Key } from "../i18n";
@@ -12,12 +12,22 @@ export function UrlField({ autoFocus = false, big = false, onOpened }: { autoFoc
   const [value, setValue] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<Key | null>(null);
+  const alive = useRef(true);
+  useEffect(() => {
+    alive.current = true;
+    return () => void (alive.current = false);
+  }, []);
 
   const submit = async () => {
     if (!value.trim() || busy) return;
     setBusy(true);
     setError(null);
     const err = await openUrl(value);
+    // The loading view may have replaced this field (empty state) — fall back to a toast.
+    if (!alive.current) {
+      if (err) useApp.getState().notify(t(err));
+      return;
+    }
     setBusy(false);
     if (err) setError(err);
     else {

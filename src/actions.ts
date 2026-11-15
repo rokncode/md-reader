@@ -4,12 +4,23 @@ import { platform } from "./platform";
 import type { Workspace, RecentItem } from "./platform/types";
 import { translate } from "./i18n";
 
-async function guard(task: () => Promise<Workspace | null>) {
+/** Show the loading state while something is fetched; `label` names what's opening. */
+function begin(label: string | null) {
+  useApp.getState().set({ loading: true, opening: label, error: null });
+}
+function end() {
+  useApp.getState().set({ loading: false, opening: null });
+}
+
+async function guard(task: () => Promise<Workspace | null>, label: string | null = null) {
   try {
     const ws = await task();
-    if (ws) await useApp.getState().openWorkspace(ws);
+    if (!ws) return ws;
+    begin(label ?? ws.name ?? null);
+    await useApp.getState().openWorkspace(ws);
     return ws;
   } catch {
+    end();
     const lang = useSettings.getState().lang;
     useApp.getState().notify(translate(lang, "errorRead"));
     return null;
@@ -23,11 +34,14 @@ export const openFolder = () => guard(() => platform().pickFolder());
 export async function openUrl(input: string, hash?: string): Promise<"errorUrl" | "errorUrlFetch" | null> {
   const { workspaceFromUrl, normaliseUrl } = await import("./platform/remote");
   if (!normaliseUrl(input)) return "errorUrl";
+  begin(input.replace(/^https?:\/\//, "").replace(/\/$/, ""));
   try {
     const { ws, initial } = await workspaceFromUrl(input);
     await useApp.getState().openWorkspace(ws, initial, hash);
+    if (useApp.getState().error) end();
     return null;
   } catch {
+    end();
     return "errorUrlFetch";
   }
 }
