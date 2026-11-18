@@ -72,7 +72,7 @@ const ar = {
   dropHint: "ملفاً أو مجلداً من أي مكان",
   noRecent: "ستظهر هنا الملفات التي تفتحها",
   startReading: "ابدأ القراءة",
-  helloHero: "اقرأ ماركداون بهدوء",
+  helloHero: "اقرأ بهدوء",
   heroSub: "عربي أولاً، بخطوط جميلة، وبلا تشتيت.",
   toggleLanguage: "تبديل اللغة",
   share: "مشاركة",
